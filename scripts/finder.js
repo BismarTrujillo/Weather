@@ -39,7 +39,9 @@ let cities = [
 window.onload = init;
 
 function init() {
+    document.getElementById("cityList").onchange = cityChange;
     cityDropdown();
+    cityChange();
 }
 function cityDropdown() {
     const cityList = document.getElementById("cityList");
@@ -53,5 +55,33 @@ function cityDropdown() {
         cityList.appendChild(cityOption);
     }
 
+}
+function cityChange(){
+    let cityInfo = document.getElementById("cityInfo");
+    let cityOptionChoice = document.getElementById("cityList").value;
+
+    //cityInfo.innerHTML = " "
+
+    for (let city in cities){
+        let stationLookupUrl = `https://api.weather.gov/points/${cities[city].latitude},${cities[city].longitude}`;
+        if (cityOptionChoice == cities[city].name){
+            cityInfo.innerHTML = stationLookupUrl;
+            fetch(stationLookupUrl)
+            .then(response => response.json())
+            .then(data => {
+                   
+                        let forecastUrl = data.properties.forecast
+                        cityInfo.innerHTML = forecastUrl;
+
+                        fetch(forecastUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            cityInfo.innerHTML = data.properties.periods[0].startTime
+                        });
+                    
+                
+            })
+        }
+    }
 }
 
