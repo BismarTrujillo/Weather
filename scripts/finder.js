@@ -56,32 +56,55 @@ function cityDropdown() {
     }
 
 }
-function cityChange(){
+function cityChange() {
     let cityInfo = document.getElementById("cityInfo");
     let cityOptionChoice = document.getElementById("cityList").value;
 
-    //cityInfo.innerHTML = " "
+    tbody.innerHTML = " "
 
-    for (let city in cities){
+    for (let city in cities) {
         let stationLookupUrl = `https://api.weather.gov/points/${cities[city].latitude},${cities[city].longitude}`;
-        if (cityOptionChoice == cities[city].name){
-            cityInfo.innerHTML = stationLookupUrl;
+        if (cityOptionChoice == cities[city].name) {
             fetch(stationLookupUrl)
-            .then(response => response.json())
-            .then(data => {
-                   
-                        let forecastUrl = data.properties.forecast
-                        cityInfo.innerHTML = forecastUrl;
+                .then(response => response.json())
+                .then(data => {
 
-                        fetch(forecastUrl)
+                    let forecastUrl = data.properties.forecast
+
+                    fetch(forecastUrl)
                         .then(response => response.json())
                         .then(data => {
-                            cityInfo.innerHTML = data.properties.periods[0].startTime
+                            for (let j in data.properties.periods) {
+                                let tbody = document.getElementById("tbody");
+
+                                let tr = document.createElement("tr");
+                                tbody.appendChild(tr);
+
+                                let tdDay = document.createElement("td");
+                                tdDay.innerHTML = data.properties.periods[j].name
+                                tr.appendChild(tdDay);
+                                let tdTemp = document.createElement("td");
+                                tdTemp.innerHTML = data.properties.periods[j].temperature +" "+data.properties.periods[j].temperatureUnit
+                                tr.appendChild(tdTemp); 
+                                let tdSpeed = document.createElement("td");
+                                tdSpeed.innerHTML = data.properties.periods[j].windSpeed
+                                tr.appendChild(tdSpeed);
+                                let tdDetails = document.createElement("td");
+                                tdDetails.innerHTML = data.properties.periods[j].detailedForecast
+                                tr.appendChild(tdDetails);
+                                
+
+
+                                // cityInfo.innerHTML = data.properties.periods[j].startTime
+                            }
                         });
-                    
-                
-            })
+
+
+                })
         }
     }
+}
+function tableInput() {
+
 }
 
